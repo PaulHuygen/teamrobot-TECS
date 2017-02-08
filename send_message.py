@@ -38,59 +38,26 @@ def uri_example():
 	uri = PSFactory.createURI('python-client', 'localhost', 9000)
 
 	client = PSFactory.createPSClient(uri)
-	client.subscribe("RobotPresenterData")
+	client.subscribe("HearingEvent")
 	client.connect()
 
-        robotevent \
-           =  RobotPresenterData( metadata_speaker = "Alladin" \
-                                , structure_prepositional_phrases_count = 0 \
-                                , structure_adjective_count = 0 \
-                                , structure_non_future = 0 \
-                                , structure_active_sentences = 0 \
-                                , structure_personal_pronouns = 0 \
-                                , structure_word_length = 0 \
-                                , structure_negations = 0 \
-                                , structure_adverbs = 0 \
-                                , structure_passive_sentences = 0 \
-                                , structure_number_of_sentences = 0 \
-                                , structure_future = 0 \
-                                , structure_wordcount = 0 \
-                                , metadata_lang = 'nl' \
-                                , metadata_timestamp = datetime.datetime.now().isoformat() \
-                                , metadata_input_text = "Open u" \
-                                , metadata_confidence_score = "0" \
-                                , metadata_other_possible_responses = [] \
-                                , metadata_people_present = [ "robot", "thin_air" ] \
-                                , metadata_script_id = "testscript" \
-                                , metadata_location_geometry_coordinates = [ 0.0, 0.0 ] \
-                                , metadata_location_geometry_type = "Rock" \
-                                , metadata_location_type = "Rock" \
-                                  , metadata_location_properties_name = ["Desert"] \
-                                , metadata_scene_id = "Fable" \
-                                , semantic_keywords = ["lantern"] \
-                                , semantic_organisations = [] \
-                                , semantic_people = [] \
-                                , semantic_places = [] \
-                                , semantic_topics = [] \
-                                , emotions_detected_emotion = [] \
-                                , emotions_information_state = [] \
-                                )
+        hearingevent =  HearingEvent( HeardSpeech = "Robin, I presume?" )
 
 	#Test sending
 	print ("Sending expression heard by robot");
 #	client.send(".*", "HelloWorldEvent", HelloWorldEvent('Kijk nou eens!'))
-	client.send(".*", "RobotPresenterData", robotevent)
+	client.send(".*", "HearingEvent", hearingevent)
 
 	#Test receving
 	while (client.isConnected()):
 		while (client.canRecv()):
 			evt = client.recv()
 			print ("Received: %s from %s addressed to %s at %d" % (evt.getEtype() ,evt.getSource(), evt.getTarget(), evt.getTime()));
-			#Interpret Data if it's HelloWorldEvent
-			if (evt.is_a("HelloWorldEvent")):
-				hwe = HelloWorldEvent()
-				evt.parseData(hwe)
-				print ("Message: %s\n" % hwe.message)
+			#Interpret Data if it's HearingEvent
+			if (evt.is_a("HearingEvent")):
+				he = HearingEvent()
+				evt.parseData(he)
+				print ("Message: %s\n" % he.HeardSpeech)
 				client.disconnect()
 				break
 			elif (evt.is_a("RobotPresenterData")):
