@@ -14,8 +14,8 @@ import teamrobot_TECS
 if __name__ == "__main__":
     client = teamrobot_TECS.makeTECSclient()
     client.connect()
-    while True:
-        heard = teamrobot_TECS.getHearEvent(client)
+    for heard in teamrobot_TECS.HearEvents(client):
+#        heard = teamrobot_TECS.getHearEvent(client)
         if heard:
             teamrobot_TECS.sendSpeakingEvent(client, "And you are .... ?")
         else:

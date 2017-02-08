@@ -32,20 +32,25 @@ from de.dfki.tecs.discovery.DiscoveryTree import *
 from genpy.rise.core.utils.tecs.constants import *
 from genpy.rise.core.utils.tecs.ttypes import *
 
+TECSserver_url = 'localhost'
+TECSserver_port = 9000
 
 def makeTECSclient():
     "Generate a TECS client and subscribe on two events"
-    uri = PSFactory.createURI('python-client', 'localhost', 9000)
+    uri = PSFactory.createURI('python-client', TECSserver_url, TECSserver_port)
     client = PSFactory.createPSClient(uri)
     client.subscribe("HearingEvent")
     client.subscribe("SpeakingEvent")
     return client
 
+
 def sendHearEvent(client, s):
+    "submit speech that Robin heard"
     hearingevent =  HearingEvent( HeardSpeech = s )
     client.send(".*", "HearingEvent", hearingevent)
 
 def getHearEvent(client):
+    "receive a speech event that Robin heard"
     while (client.isConnected()):
         while (client.canRecv()):
             evt = client.recv()
@@ -55,11 +60,27 @@ def getHearEvent(client):
  #                   client.disconnect()
                     return he.HeardSpeech
 
+def HearEvents(client):
+    "receive a list of speech events that Robin heard"
+    while (client.isConnected()):
+        while (client.canRecv()):
+            evt = client.recv()
+            if (evt.is_a("HearingEvent")):
+                    he = HearingEvent()
+                    evt.parseData(he)
+ #                   client.disconnect()
+                    yield he.HeardSpeech
+
+
+
+
 def sendSpeakingEvent(client, s):
+    "submit speech that Robin ought to speak"
     speakingevent =  SpeakingEvent( SpeakSpeech = s )
     client.send(".*", "SpeakingEvent", speakingevent)
 
 def getSpeakEvent(client):
+    "receive speech that Robin ought to speak"
     while (client.isConnected()):
         while (client.canRecv()):
             evt = client.recv()
@@ -69,47 +90,6 @@ def getSpeakEvent(client):
  #                   client.disconnect()
                     return se.SpeakSpeech
 
-
-def uri_example():
-
-        client = makeTECSclient()
-        client.connect()
-	#Test sending
-	print ("Sending expression heard by robot");
-        sendHearEvent(client, "Robin, I presume?")
-#	client.send(".*", "HearingEvent", hearingevent)
-
-	#Test receving
-        heard = getHearEvent(client)
-        if heard:
-            print "heard: {}".format(heard)
-        else:
-            print "Misunderstood"
-        client.disconnect()
-#	uri = PSFactory.createURI('python-client', 'localhost', 9000)
-#
-#	client = PSFactory.createPSClient(uri)
-#	client.subscribe("HearingEvent")
-#	client.connect()
-#	while (client.isConnected()):
-#		while (client.canRecv()):
-#			evt = client.recv()
-#			print ("Received: %s from %s addressed to %s at %d" % (evt.getEtype() ,evt.getSource(), evt.getTarget(), evt.getTime()));
-#			#Interpret Data if it's HearingEvent
-#			if (evt.is_a("HearingEvent")):
-#				he = HearingEvent()
-#				evt.parseData(he)
-#				print ("Message: %s\n" % he.HeardSpeech)
-#				client.disconnect()
-#				break
-#			elif (evt.is_a("RobotPresenterData")):
-#				rbe = RobotPresenterData()
-#				evt.parseData(rbe)
-#				print ("Speaker: %s\n" % rbe.metadata_speaker)
-#				client.disconnect()
-#				break
-#        client.disconnect()
-#	print ("Successfully shutdown and stopped")
 
 
 if __name__ == "__main__":
