@@ -20,6 +20,7 @@
 # IN THE SOFTWARE.
 #
 import sys,glob
+import datetime
 
 from de.dfki.tecs.misc import *
 from de.dfki.tecs.ps.PSFactory import PSFactory
@@ -32,64 +33,95 @@ from genpy.rise.core.utils.tecs.constants import *
 from genpy.rise.core.utils.tecs.ttypes import *
 
 
-def discovery_example():
-	#Open a Connection with id python-discovery-client  
-	client = PSFactory.createPSClient("python-discovery-client")
-	client.subscribe("HelloWorldEvent")
-	client.connect()
+def makeTECSclient():
+    "Generate a TECS client and subscribe on two events"
+    uri = PSFactory.createURI('python-client', 'localhost', 9000)
+    client = PSFactory.createPSClient(uri)
+    client.subscribe("HearingEvent")
+    client.subscribe("SpeakingEvent")
+    return client
 
-	#Test sending
-	print ("Sending HelloWorldEvent");
-	client.send(".*", "HelloWorldEvent", HelloWorldEvent('Hello World'))
+def sendHearEvent(client, s):
+    hearingevent =  HearingEvent( HeardSpeech = s )
+    client.send(".*", "HearingEvent", hearingevent)
 
-	#Test receiving
-	while (client.isConnected()):
-		while (client.canRecv()):
-			evt = client.recv()
-			print ("Received: %s from %s addressed to %s at %d" % (evt.getEtype() ,evt.getSource(), evt.getTarget(), evt.getTime()));
-			#Interpret Data if it's HelloWorldEvent
-			if (evt.is_a("HelloWorldEvent")):
-				hwe = HelloWorldEvent()
-				evt.parseData(hwe)
-				print ("Message: %s\n" % hwe.message)
-				client.disconnect()
-				break #otherwise canRecv would throw an error because disconnected.
-		
-	print ("Successfully shutdown and stopped")
+def getHearEvent(client):
+    while (client.isConnected()):
+        while (client.canRecv()):
+            evt = client.recv()
+            if (evt.is_a("HearingEvent")):
+                    he = HearingEvent()
+                    evt.parseData(he)
+ #                   client.disconnect()
+                    return he.HeardSpeech
+
+def sendSpeakingEvent(client, s):
+    speakingevent =  SpeakingEvent( SpeakSpeech = s )
+    client.send(".*", "SpeakingEvent", speakingevent)
+
+def getSpeakEvent(client):
+    while (client.isConnected()):
+        while (client.canRecv()):
+            evt = client.recv()
+            if (evt.is_a("SpeakingEvent")):
+                    se = SpeakingEvent()
+                    evt.parseData(se)
+ #                   client.disconnect()
+                    return se.SpeakSpeech
 
 
 def uri_example():
-	uri = PSFactory.createURI('python-client', 'localhost', 9000)
 
-	client = PSFactory.createPSClient(uri)
-	client.subscribe("HelloWorldEvent")
-	client.connect()
-
-
+        client = makeTECSclient()
+        client.connect()
 	#Test sending
-	print ("Sending HelloWorldEvent");
-	client.send(".*", "HelloWorldEvent", HelloWorldEvent('Kijk nou eens!'))
+	print ("Sending expression heard by robot");
+        sendHearEvent(client, "Robin, I presume?")
+#	client.send(".*", "HearingEvent", hearingevent)
 
 	#Test receving
-	while (client.isConnected()):
-		while (client.canRecv()):
-			evt = client.recv()
-			print ("Received: %s from %s addressed to %s at %d" % (evt.getEtype() ,evt.getSource(), evt.getTarget(), evt.getTime()));
-			#Interpret Data if it's HelloWorldEvent
-			if (evt.is_a("HelloWorldEvent")):
-				hwe = HelloWorldEvent()
-				evt.parseData(hwe)
-				print ("Message: %s\n" % hwe.message)
-				client.disconnect()
-				break
-		
-	print ("Successfully shutdown and stopped")
+        heard = getHearEvent(client)
+        if heard:
+            print "heard: {}".format(heard)
+        else:
+            print "Misunderstood"
+        client.disconnect()
+#	uri = PSFactory.createURI('python-client', 'localhost', 9000)
+#
+#	client = PSFactory.createPSClient(uri)
+#	client.subscribe("HearingEvent")
+#	client.connect()
+#	while (client.isConnected()):
+#		while (client.canRecv()):
+#			evt = client.recv()
+#			print ("Received: %s from %s addressed to %s at %d" % (evt.getEtype() ,evt.getSource(), evt.getTarget(), evt.getTime()));
+#			#Interpret Data if it's HearingEvent
+#			if (evt.is_a("HearingEvent")):
+#				he = HearingEvent()
+#				evt.parseData(he)
+#				print ("Message: %s\n" % he.HeardSpeech)
+#				client.disconnect()
+#				break
+#			elif (evt.is_a("RobotPresenterData")):
+#				rbe = RobotPresenterData()
+#				evt.parseData(rbe)
+#				print ("Speaker: %s\n" % rbe.metadata_speaker)
+#				client.disconnect()
+#				break
+#        client.disconnect()
+#	print ("Successfully shutdown and stopped")
 
 
-uri_example()
-# discovery_example()
+if __name__ == "__main__":
+    client = makeTECSclient()
+    client.connect()
+    sendHearEvent(client, "Robin, I presume?")
+    heard = getHearEvent(client)
+    if heard:
+        print "heard: {}".format(heard)
+    else:
+        print "Misunderstood"
+    client.disconnect()
 
 
-#while True:
-#	uri = PSFactory.discoverURI("test", 1000, DiscoveryTree.ALL)
-	#print uri
+
