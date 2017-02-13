@@ -8,12 +8,19 @@ that show usage.
 # Demo Usage
 
 1. Clone this and make sure you use Python 2.7.
-2. Compile the thrift file. Do: `thrift -gen py thrift/robin_speech.thrift`.
-3. Do `ln -s gen-py genpy`.
-3. Start the TECS server if you have not done that yet.
-4. Fill in the URL and the port of the server in `teamrobot_TECS.py`
-5. Do `python vu_part.py`.
-6. In another terminal do 'python robin_part.py' and see that a
+2. Install libtecs in your Python distribution if you have not done
+   that yet:
+      ```wget https://cloud.dfki.de/owncloud/index.php/s/aCcdLNm0jY2b04T?path=%2Flibtecs%2Fpy~
+	  tar -xzf libtecs-2.0.4.tar.gz
+	  cd libtecs-2.0.4/
+	  python setup.py install
+	   ``` 
+3. Compile the thrift file. Do: `thrift -gen py thrift/robin_speech.thrift`.
+4. Do `ln -s gen-py genpy`.
+5. Start the TECS server if you have not done that yet.
+6. Fill in the URL and the port of the server in `teamrobot_TECS.py`
+7. Do `python vu_part.py`.
+8. In another terminal do 'python robin_part.py' and see that a
    communication has taken place.
 
 

@@ -32,8 +32,10 @@ from de.dfki.tecs.discovery.DiscoveryTree import *
 from genpy.rise.core.utils.tecs.constants import *
 from genpy.rise.core.utils.tecs.ttypes import *
 
-TECSserver_url = 'localhost'
-TECSserver_port = 9000
+# TECSserver_url = 'localhost'
+# TECSserver_port = 9000
+TECSserver_url = '139.162.151.201'
+TECSserver_port = 1237
 
 def makeTECSclient():
     "Generate a TECS client and subscribe on two events"
