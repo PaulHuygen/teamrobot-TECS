@@ -1,0 +1,5 @@
+#!/bin/bash
+SCRIPTDIR=/usr/local/share/teamrobot-TECS
+cd $SCRIPTDIR
+source /usr/local/bin/usepython27
+python ./send_VU_processed.py 

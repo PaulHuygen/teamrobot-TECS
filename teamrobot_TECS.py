@@ -92,6 +92,17 @@ def get_VU_processed(client):
  #                   client.disconnect()
                     return se.json_structure
 
+def get_VU_processeds(client):
+    "receive speech that Robin ought to speak"
+    while (client.isConnected()):
+        while (client.canRecv()):
+            evt = client.recv()
+            if (evt.is_a("VU_processed")):
+                    se = VU_processed()
+                    evt.parseData(se)
+ #                   client.disconnect()
+                    yield se.json_structure
+
 
 
 if __name__ == "__main__":

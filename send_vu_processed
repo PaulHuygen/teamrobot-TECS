@@ -1,0 +1,5 @@
+#!/bin/bash
+SCRIPTDIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+cd $SCRIPTDIR
+source /usr/local/bin/usepython27
+python send_VU_processed.py 

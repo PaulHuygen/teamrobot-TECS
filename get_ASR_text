@@ -1,0 +1,5 @@
+#!/bin/bash
+SCRIPTDIR=/usr/local/share/teamrobot-TECS
+cd $SCRIPTDIR
+source /usr/local/bin/usepython27
+python ./get_ASR_text.py 
