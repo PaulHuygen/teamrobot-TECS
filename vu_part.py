@@ -14,9 +14,9 @@ import teamrobot_TECS
 if __name__ == "__main__":
     client = teamrobot_TECS.makeTECSclient()
     client.connect()
-    for heard in teamrobot_TECS.HearEvents(client):
-#        heard = teamrobot_TECS.getHearEvent(client)
+    for heard in teamrobot_TECS.get_ASR_texts(client):
+#        heard = teamrobot_TECS.get_ASR_text(client)
         if heard:
-            teamrobot_TECS.sendVU_processed(client, "And you are .... ?")
+            teamrobot_TECS.send_VU_processed(client, "And you are .... ?")
         else:
             print "Misunderstood"

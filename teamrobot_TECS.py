@@ -46,12 +46,12 @@ def makeTECSclient():
     return client
 
 
-def sendHearEvent(client, s):
+def send_ASR_text(client, s):
     "submit speech that Robin heard"
     hearingevent =  ASR_text( json_structure = s )
     client.send(".*", "ASR_text", hearingevent)
 
-def getHearEvent(client):
+def get_ASR_text(client):
     "receive a speech event that Robin heard"
     while (client.isConnected()):
         while (client.canRecv()):
@@ -62,7 +62,7 @@ def getHearEvent(client):
  #                   client.disconnect()
                     return he.json_structure
 
-def HearEvents(client):
+def get_ASR_texts(client):
     "receive a list of speech events that Robin heard"
     while (client.isConnected()):
         while (client.canRecv()):
@@ -76,12 +76,12 @@ def HearEvents(client):
 
 
 
-def sendVU_processed(client, s):
+def send_VU_processed(client, s):
     "submit speech that Robin ought to speak"
     speakingevent =  VU_processed( json_structure = s )
     client.send(".*", "VU_processed", speakingevent)
 
-def getSpeakEvent(client):
+def get_VU_processed(client):
     "receive speech that Robin ought to speak"
     while (client.isConnected()):
         while (client.canRecv()):
@@ -97,8 +97,8 @@ def getSpeakEvent(client):
 if __name__ == "__main__":
     client = makeTECSclient()
     client.connect()
-    sendHearEvent(client, "Robin, I presume?")
-    heard = getHearEvent(client)
+    send_VU_processed(client, "Robin, I presume?")
+    heard = get_ASR_text(client)
     if heard:
         print "heard: {}".format(heard)
     else:

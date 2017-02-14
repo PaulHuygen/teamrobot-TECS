@@ -14,6 +14,6 @@ import teamrobot_TECS
 if __name__ == "__main__":
     client = teamrobot_TECS.makeTECSclient()
     client.connect()
-    teamrobot_TECS.sendHearEvent(client, "Aap, noot, Mies")
+    teamrobot_TECS.send_ASR_text(client, "Aap, noot, Mies")
     client.disconnect()
  

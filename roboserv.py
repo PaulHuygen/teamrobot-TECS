@@ -15,23 +15,23 @@ import teamrobot_TECS
 
 app = Flask(__name__)
 
-speechstr = "Hello World"
+VU_processed = "Hello World"
 
 @app.route("/")
 def hello():
-    return speechstr
+    return VU_processed
 
 @app.route("/send" , methods=['GET', 'POST'])
 def send():
     if request.method == 'POST':
-        speechstr = request.form['speechstr']
-#        print "Got: {}".format(speechstr)
+        VU_processed = request.form['VU_processed']
+#        print "Got: {}".format(VU_processed)
         client = teamrobot_TECS.makeTECSclient()
         client.connect()
-        teamrobot_TECS.sendSpeakingEvent(client, speechstr)
+        teamrobot_TECS.send_VU_processed(client, VU_processed)
         client.disconnect()
-#        print "sent: {}".format(speechstr)
-        return "Received: {}".format(speechstr)
+#        print "sent: {}".format(VU_processed)
+        return "Received: {}".format(VU_processed)
     else:
         return render_template('sendtempl.html')
 
@@ -40,8 +40,8 @@ def send():
 def waitfor():
     client = teamrobot_TECS.makeTECSclient()
     client.connect()
-    speechstr = teamrobot_TECS.getHearEvent(client)
-    return speechstr
+    VU_processed = teamrobot_TECS.get_ASR_text(client)
+    return VU_processed
 
 
 

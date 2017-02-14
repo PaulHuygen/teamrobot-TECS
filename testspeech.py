@@ -15,7 +15,7 @@ if __name__ == "__main__":
     client = teamrobot_TECS.makeTECSclient()
     client.connect()
     while True:
-        speechs = teamrobot_TECS.getSpeakEvent(client)
+        speechs = teamrobot_TECS.get_VU_processed(client)
         if speechs == "StopIt":
             print "Stop."
             client.disconnect()
