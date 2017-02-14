@@ -17,6 +17,6 @@ if __name__ == "__main__":
     for heard in teamrobot_TECS.HearEvents(client):
 #        heard = teamrobot_TECS.getHearEvent(client)
         if heard:
-            teamrobot_TECS.sendSpeakingEvent(client, "And you are .... ?")
+            teamrobot_TECS.sendVU_processed(client, "And you are .... ?")
         else:
             print "Misunderstood"
