@@ -39,56 +39,56 @@ def makeTECSclient():
     "Generate a TECS client and subscribe on two events"
     uri = PSFactory.createURI('python-client', TECSserver_url, TECSserver_port)
     client = PSFactory.createPSClient(uri)
-    client.subscribe("HearingEvent")
-    client.subscribe("SpeakingEvent")
+    client.subscribe("ASR_text")
+    client.subscribe("VU_processed")
     return client
 
 
 def sendHearEvent(client, s):
     "submit speech that Robin heard"
-    hearingevent =  HearingEvent( HeardSpeech = s )
-    client.send(".*", "HearingEvent", hearingevent)
+    hearingevent =  ASR_text( json_structure = s )
+    client.send(".*", "ASR_text", hearingevent)
 
 def getHearEvent(client):
     "receive a speech event that Robin heard"
     while (client.isConnected()):
         while (client.canRecv()):
             evt = client.recv()
-            if (evt.is_a("HearingEvent")):
-                    he = HearingEvent()
+            if (evt.is_a("ASR_text")):
+                    he = ASR_text()
                     evt.parseData(he)
  #                   client.disconnect()
-                    return he.HeardSpeech
+                    return he.json_structure
 
 def HearEvents(client):
     "receive a list of speech events that Robin heard"
     while (client.isConnected()):
         while (client.canRecv()):
             evt = client.recv()
-            if (evt.is_a("HearingEvent")):
-                    he = HearingEvent()
+            if (evt.is_a("ASR_text")):
+                    he = ASR_text()
                     evt.parseData(he)
  #                   client.disconnect()
-                    yield he.HeardSpeech
+                    yield he.json_structure
 
 
 
 
-def sendSpeakingEvent(client, s):
+def sendVU_processed(client, s):
     "submit speech that Robin ought to speak"
-    speakingevent =  SpeakingEvent( SpeakSpeech = s )
-    client.send(".*", "SpeakingEvent", speakingevent)
+    speakingevent =  VU_processed( json_structure = s )
+    client.send(".*", "VU_processed", speakingevent)
 
 def getSpeakEvent(client):
     "receive speech that Robin ought to speak"
     while (client.isConnected()):
         while (client.canRecv()):
             evt = client.recv()
-            if (evt.is_a("SpeakingEvent")):
-                    se = SpeakingEvent()
+            if (evt.is_a("VU_processed")):
+                    se = VU_processed()
                     evt.parseData(se)
  #                   client.disconnect()
-                    return se.SpeakSpeech
+                    return se.json_structure
 
 
 
